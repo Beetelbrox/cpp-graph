@@ -14,12 +14,12 @@ class Adjlist {
     std::vector<bool> vertex_alive;
     bool is_directed;
 
-protected:
+public:
     Adjlist(bool dir=0);
     int add_vertex();
     int add_edge(size_t src, size_t dst, int weight=1);
     bool vertex_exists(size_t v) const;
-    bool edge_exists(size_t src, size_t dst);
+    int edge_exists(size_t src, size_t dst) const;
 
 };
 
