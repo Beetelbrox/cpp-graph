@@ -1,36 +1,57 @@
 #include <iostream>
 #include <vector>
-#include <utility>
+#include <tuple>
 #include "adjlist.hpp"
 
 using namespace std;
 
 
-Adjlist::Adjlist(): directed{0} {
-    cout << num_vertices << endl;
+Adjlist::Adjlist(bool dir):
+    num_vertices{0},
+    num_edges{0},
+    is_directed{dir}
+{
 }
 
 int Adjlist::add_vertex() {
-    in_edges.push_back(vector<pair<std::size_t, int>>());
-    out_edges.push_back(vector<pair<std::size_t, int>>());
+    in_edges.push_back(vector<edge_type>());
+    out_edges.push_back(vector<edge_type>());
     vertex_alive.push_back(1);
     ++num_vertices;
+    return 0;
 }
 
-int Adjlist::add_edge(std::size_t src, std::size_t dst, int weight) {
-    if ( src < 0 || src > num_vertices || dst < 0 || dst > num_vertices ) {
+int Adjlist::add_edge(size_t src, size_t dst, int weight) {
+    if ( src > num_vertices || dst > num_vertices ) {
         std::cerr << "Error [Adjlist] - Unable to add edge: Vertex index out of bounds." << endl;
         return -1;
     } else if (!vertex_alive[src] || !vertex_alive[dst]) {
         std::cerr << "Error [Adjlist] - Unable to add edge: One or more vertices no longer exist." << endl;
         return -1;
     }
-    in_edges[src].push_back(make_pair(dst, weight));
-    if (!directed) out_edges[dst].push_back(make_pair(src, weight));
-    ++num_vertices;
-    return 0;
+
+    if (!edge_exists(src, dst)) {
+        out_edges[src].push_back(make_tuple(dst, weight, 1));
+        if ( !is_directed ) in_edges[dst].push_back(make_tuple(src, weight, 1));
+        ++num_edges;
+        return 0;
+    }
+    return -1;
 }
 
-bool Adjlist::contains_vertex(size_t v){
+bool Adjlist::vertex_exists(size_t v) const {
+    if (v >= num_vertices) return false;
+    else if (!vertex_alive[v]) return false;
+    return true;
+}
 
+bool Adjlist::edge_exists(size_t src, size_t dst) {
+    for (size_t i=0; i < out_edges[src].size(); ++i) {
+        if (get<0>(out_edges[src][i]) == dst) return true;
+    }
+    return false;
+}
+
+int main() {
+    Adjlist al;
 }

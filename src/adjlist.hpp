@@ -2,21 +2,24 @@
 #define _ADJLIST_GUARD
 
 #include <vector>
-#include <utility>
+#include <tuple>
 
 class Adjlist {
-    std::size_t num_vertices;
-    std::size_t num_edges;
-    std::vector<std::vector<std::pair<std::size_t, int>>> in_edges;
-    std::vector<std::vector<std::pair<std::size_t, int>>> out_edges;
-    std::vector<bool> vertex_alive;
-    bool directed;
+    typedef std::tuple<size_t, int, int> edge_type;
 
-public:
-    Adjlist();
+    size_t num_vertices;
+    size_t num_edges;
+    std::vector<std::vector<edge_type>> in_edges;
+    std::vector<std::vector<edge_type>> out_edges;
+    std::vector<bool> vertex_alive;
+    bool is_directed;
+
+protected:
+    Adjlist(bool dir=0);
     int add_vertex();
-    int add_edge(std::size_t src, std::size_t dst, int weight=1);
-    bool contains_vertex(size_t v);
+    int add_edge(size_t src, size_t dst, int weight=1);
+    bool vertex_exists(size_t v) const;
+    bool edge_exists(size_t src, size_t dst);
 
 };
 
