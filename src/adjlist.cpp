@@ -22,7 +22,7 @@ int Adjlist::add_vertex() {
 }
 
 int Adjlist::add_edge(size_t src, size_t dst, int weight) {
-    if ( src > num_vertices || dst > num_vertices ) {
+    if ( src >= num_vertices || dst >= num_vertices ) {
         std::cerr << "Error [Adjlist] - Unable to add edge: Vertex index out of bounds." << endl;
         return -1;
     } else if (!vertex_alive[src] || !vertex_alive[dst]) {
@@ -45,13 +45,17 @@ bool Adjlist::vertex_exists(size_t v) const {
     return true;
 }
 
-bool Adjlist::edge_exists(size_t src, size_t dst) {
+bool Adjlist::edge_exists(size_t src, size_t dst) const {
+    if ( src >= num_vertices || dst >= num_vertices ) {
+        std::cerr << "Error [Adjlist] - Trying to add edge between non-existing vertices." << endl;
+        return false;
+    } else if (!vertex_alive[src] || !vertex_alive[dst]) {
+        std::cerr << "Error [Adjlist] - Trying to add edge between one or more deleted vertices." << endl;
+        return false;
+    }
+
     for (size_t i=0; i < out_edges[src].size(); ++i) {
         if (get<0>(out_edges[src][i]) == dst) return true;
     }
     return false;
-}
-
-int main() {
-    Adjlist al;
 }
