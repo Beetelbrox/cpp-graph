@@ -22,14 +22,6 @@ int Adjlist::add_vertex() {
 }
 
 int Adjlist::add_edge(size_t src, size_t dst, int weight) {
-    if ( src >= num_vertices || dst >= num_vertices ) {
-        std::cerr << "Error [Adjlist] - Unable to add edge: Vertex index out of bounds." << endl;
-        return -1;
-    } else if (!vertex_alive[src] || !vertex_alive[dst]) {
-        std::cerr << "Error [Adjlist] - Unable to add edge: One or more vertices no longer exist." << endl;
-        return -1;
-    }
-
     if (!edge_exists(src, dst)) {
         out_edges[src].push_back(make_tuple(dst, weight, 1));
         if ( !is_directed ) in_edges[dst].push_back(make_tuple(src, weight, 1));
@@ -45,17 +37,17 @@ bool Adjlist::vertex_exists(size_t v) const {
     return true;
 }
 
-bool Adjlist::edge_exists(size_t src, size_t dst) const {
+int Adjlist::edge_exists(size_t src, size_t dst) const {
     if ( src >= num_vertices || dst >= num_vertices ) {
-        std::cerr << "Error [Adjlist] - Trying to add edge between non-existing vertices." << endl;
-        return false;
+        std::cerr << "Error [Adjlist] - One or both of the edge's ends doesn't exist." << endl;
+        return -1;
     } else if (!vertex_alive[src] || !vertex_alive[dst]) {
-        std::cerr << "Error [Adjlist] - Trying to add edge between one or more deleted vertices." << endl;
-        return false;
+        std::cerr << "Error [Adjlist] - One or both of the edge's ends was deleted." << endl;
+        return -1;
     }
 
     for (size_t i=0; i < out_edges[src].size(); ++i) {
-        if (get<0>(out_edges[src][i]) == dst) return true;
+        if (get<0>(out_edges[src][i]) == dst) return 1;
     }
-    return false;
+    return 0;
 }
