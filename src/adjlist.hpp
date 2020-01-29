@@ -19,7 +19,7 @@ public:
     int add_vertex();
     int add_edge(size_t src, size_t dst, int weight=1);
     bool vertex_exists(size_t v) const;
-    int edge_exists(size_t src, size_t dst) const;
+    bool edge_exists(size_t src, size_t dst) const;
 
 };
 

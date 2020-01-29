@@ -37,17 +37,17 @@ bool Adjlist::vertex_exists(size_t v) const {
     return true;
 }
 
-int Adjlist::edge_exists(size_t src, size_t dst) const {
+bool Adjlist::edge_exists(size_t src, size_t dst) const {
     if ( src >= num_vertices || dst >= num_vertices ) {
-        std::cerr << "Error [Adjlist] - One or both of the edge's ends doesn't exist." << endl;
-        return -1;
+        cerr << "Error [Adjlist] - One or both of the edge's ends doesn't exist." << endl;
+        return false;
     } else if (!vertex_alive[src] || !vertex_alive[dst]) {
-        std::cerr << "Error [Adjlist] - One or both of the edge's ends was deleted." << endl;
-        return -1;
+        cerr << "Error [Adjlist] - One or both of the edge's ends was deleted." << endl;
+        return false;
     }
 
     for (size_t i=0; i < out_edges[src].size(); ++i) {
-        if (get<0>(out_edges[src][i]) == dst) return 1;
+        if (get<0>(out_edges[src][i]) == dst) return true;
     }
-    return 0;
+    return false;
 }
