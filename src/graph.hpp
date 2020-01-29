@@ -7,7 +7,7 @@
 // Template declaration
 
 template <typename T>
-class Graph: protected Adjlist {
+class Graph: public Adjlist {
     std::unordered_map<T, size_t> vertex_map;
 
     size_t get_vertex_ix(const T &val);
@@ -38,7 +38,8 @@ Graph<T>::Graph(bool dir): Adjlist(dir) {
 
 template <typename T>
 int Graph<T>::add_vertex(const T &val) {
-    if( vertex_map.emplace(val, num_vertices).second ) return add_vertex();
+    if( vertex_map.emplace(val, num_vertices).second ) return Adjlist::add_vertex();
+    std::cerr << "Error [Graph - Add vertex] Vertex '" << val << "' already exists" << std::endl;
     return -1;
 }
 

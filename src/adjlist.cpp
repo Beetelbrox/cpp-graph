@@ -51,3 +51,6 @@ bool Adjlist::edge_exists(size_t src, size_t dst) const {
     }
     return false;
 }
+
+size_t Adjlist::get_num_vertices() const { return num_vertices; }
+size_t Adjlist::get_num_edges() const { return num_edges; }
