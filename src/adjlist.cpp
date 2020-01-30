@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <tuple>
+#include <utility>
 #include "adjlist.hpp"
 
 using namespace std;
@@ -10,8 +10,7 @@ Adjlist::Adjlist(bool dir):
     num_vertices{0},
     num_edges{0},
     is_directed{dir}
-{
-}
+{}
 
 int Adjlist::add_vertex() {
     in_edges.push_back(vector<edge_type>());
@@ -22,13 +21,10 @@ int Adjlist::add_vertex() {
 }
 
 int Adjlist::add_edge(size_t src, size_t dst, int weight) {
-    if (!edge_exists(src, dst)) {
-        out_edges[src].push_back(make_tuple(dst, weight, 1));
-        if ( !is_directed ) in_edges[dst].push_back(make_tuple(src, weight, 1));
-        ++num_edges;
-        return 0;
-    }
-    return -1;
+    out_edges[src].push_back(make_pair(dst, weight));
+    if ( !is_directed ) in_edges[dst].push_back(make_pair(src, weight));
+    ++num_edges;
+    return 0;
 }
 
 bool Adjlist::vertex_exists(size_t v) const {
@@ -47,7 +43,7 @@ bool Adjlist::edge_exists(size_t src, size_t dst) const {
     }
 
     for (size_t i=0; i < out_edges[src].size(); ++i) {
-        if (get<0>(out_edges[src][i]) == dst) return true;
+        if (out_edges[src][i].first == dst) return true;
     }
     return false;
 }

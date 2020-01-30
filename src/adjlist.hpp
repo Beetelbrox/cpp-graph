@@ -2,10 +2,10 @@
 #define _ADJLIST_GUARD
 
 #include <vector>
-#include <tuple>
+#include <utility>
 
 class Adjlist {
-    typedef std::tuple<size_t, int, int> edge_type;
+    typedef std::pair<size_t, int> edge_type;
     std::vector<std::vector<edge_type>> in_edges;
     std::vector<std::vector<edge_type>> out_edges;
     std::vector<bool> vertex_alive;
