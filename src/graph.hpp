@@ -2,6 +2,10 @@
 #define _GRAPH_GUARD
 
 #include <unordered_map>
+#include <string>
+#include <vector>
+#include <tuple>
+#include <iterator>
 #include "adjlist.hpp"
 
 // Template declaration
@@ -39,7 +43,7 @@ Graph<T>::Graph(bool dir): Adjlist(dir) {
 template <typename T>
 int Graph<T>::add_vertex(const T &val) {
     if( vertex_map.emplace(val, num_vertices).second ) return Adjlist::add_vertex();
-    std::cerr << "Error [Graph - Add vertex] Vertex '" << val << "' already exists" << std::endl;
+    //std::cerr << "Error [Graph - Add vertex] Vertex '" << val << "' already exists" << std::endl;
     return -1;
 }
 
@@ -47,11 +51,13 @@ template <typename T>
 int Graph<T>::add_edge(const T &src, const T &dst, int weight) {
     size_t src_ix = get_vertex_ix(src);
     size_t dst_ix = get_vertex_ix(dst);
+    /*
     if (src_ix >= num_vertices || dst_ix >= num_vertices) {
         std::cerr << "Error [Graph] - One or both of the edge's ends doesn't exist." << std::endl;
         return -1;
     }
-    return add_edge(src, dst, weight);
+    */
+    return Adjlist::add_edge(src_ix, dst_ix, weight);
 }
 
 template <typename T>
@@ -63,7 +69,5 @@ template <typename T>
 bool Graph<T>::edge_exists (const T &src, const T &dst) const{
     return edge_exists(get_vertex_ix(src), get_vertex_ix(src));
 }
-
-
 
 #endif
