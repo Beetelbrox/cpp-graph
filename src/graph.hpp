@@ -1,35 +1,36 @@
 #ifndef _GRAPH_GUARD
 #define _GRAPH_GUARD
 
+#include "adjlist.hpp"
 #include <unordered_map>
 #include <string>
-#include <vector>
 #include <tuple>
 #include <iterator>
-#include "adjlist.hpp"
+
 
 // Template declaration
 
 template <typename T>
-class Graph: public Adjlist {
-    std::unordered_map<T, size_t> vertex_map;
+class Graph: public AdjList {
+ public:
+  Graph(bool dir=0);
+  int add_vertex(const T &val);
+  int add_edge(const T &src, const T &dst, int weight=1);
+  bool vertex_exists(const T &val) const;
+  bool edge_exists(const T &src, const T &dst) const;
+    
+ private:
+  size_t get_vertex_ix(const T &label);
 
-    size_t get_vertex_ix(const T &val);
-
-public:
-    Graph(bool dir=0);
-    int add_vertex(const T &val);
-    int add_edge(const T &src, const T &dst, int weight=1);
-    bool vertex_exists(const T &val) const;
-    bool edge_exists(const T &src, const T &dst) const;
-
+  std::unordered_map<T, size_t> vertex_map_;
+  
 };
 
 // Template Definition
 // Private Methods
 
 template <typename T>
-size_t Graph<T>::get_vertex_ix(const T &val) {
+size_t Graph<T>::get_vertex_ix(const T &label) {
     typename std::unordered_map<T, size_t>::const_iterator map_it = vertex_map.find(val);
     return (map_it == vertex_map.end()) ? num_vertices : map_it->second;
 }
@@ -42,7 +43,7 @@ Graph<T>::Graph(bool dir): Adjlist(dir) {
 
 template <typename T>
 int Graph<T>::add_vertex(const T &val) {
-    if( vertex_map.emplace(val, num_vertices).second ) return Adjlist::add_vertex();
+    if( vertex_map.emplace(val, num_vertices).second ) return AdjList::add_vertex();
     //std::cerr << "Error [Graph - Add vertex] Vertex '" << val << "' already exists" << std::endl;
     return -1;
 }
