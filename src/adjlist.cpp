@@ -11,10 +11,10 @@ bool AdjList::is_directed() const { return directed_; }
 
 // PROTECTED METHODS
 
-AdjList::AdjList(bool dir):
+AdjList::AdjList(bool directed):
     num_vertices_{0},
     num_edges_{0},
-    directed_{dir}
+    directed_{directed}
 {}
 
 void AdjList::add_vertex() {
@@ -48,6 +48,20 @@ bool AdjList::is_valid_edge(size_t src, size_t dst) const {
             if (out_edges_[src][i].first == dst) return true;
     }
     return false;
+}
+
+// Assume no loops <TODO> add something to track loops
+size_t AdjList::get_degree(size_t v) const {
+    if (!directed_) return in_edges_[v].size();
+    else return in_edges_[v].size() + out_edges_[v].size();
+}
+
+size_t AdjList::get_indegree(size_t v) const {
+    return in_edges_[v].size();
+}
+
+size_t AdjList::get_outdegree(size_t v) const {
+    return out_edges_[v].size(); 
 }
 
 // PRIVATE METHODS

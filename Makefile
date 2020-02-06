@@ -6,7 +6,8 @@ GRAPH = graph
 MAIN =  main
 
 $(MAIN): $(MAIN).o $(ADJLIST).o
-	$(CCC) $(CFLAGS) -o bin/$(MAIN) $(MAIN).o $(ADJLIST).o 
+	$(CCC) $(CFLAGS) -o bin/$(MAIN) $(MAIN).o $(ADJLIST).o
+	rm --force *.o
 
 ${MAIN}.o: src/$(MAIN).cpp
 	$(CCC) $(CFLAGS) -c src/$(MAIN).cpp

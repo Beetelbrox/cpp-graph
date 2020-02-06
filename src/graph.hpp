@@ -5,19 +5,21 @@
 #include <unordered_map>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <iterator>
+#include <iostream>
 
 
-// Template declaration
-
-template <typename T>
+// Let's assume for the moment that T is hashable for the unordered map
+template <typename T = std::string>
 class Graph: public AdjList {
  public:
-  Graph(bool dir=0);
-  int add_vertex(const T &val);
-  int add_edge(const T &src, const T &dst, int weight=1);
-  bool vertex_exists(const T &val) const;
-  bool edge_exists(const T &src, const T &dst) const;
+  Graph(bool directed=0);
+  int add_vertex(const T &label);
+  int add_edge(const T &src_label, const T &dst_label, int weight=1);
+  bool vertex_exists(const T &label) const;
+  bool edge_exists(const T &src_label, const T &dst_label) const;
+  void teste() const;
     
  private:
   size_t get_vertex_ix(const T &label);
@@ -26,49 +28,56 @@ class Graph: public AdjList {
   
 };
 
+template <typename T>
+void Graph<T>::teste() const {
+    for(size_t i=0; i < num_vertices_;++i) {
+        std::cout << get_degree(i) << std::endl;
+    }
+}
+
 // Template Definition
 // Private Methods
 
 template <typename T>
 size_t Graph<T>::get_vertex_ix(const T &label) {
-    typename std::unordered_map<T, size_t>::const_iterator map_it = vertex_map.find(val);
-    return (map_it == vertex_map.end()) ? num_vertices : map_it->second;
+    try {
+        return vertex_map_.at(label);      // vector::at throws an out-of-range
+    } catch (const std::out_of_range& oor) {
+        return num_vertices_;
+    }
 }
 
 // Public Methods
 
 template <typename T>
-Graph<T>::Graph(bool dir): Adjlist(dir) {
-}
+Graph<T>::Graph(bool directed): AdjList(directed) {}
 
 template <typename T>
 int Graph<T>::add_vertex(const T &val) {
-    if( vertex_map.emplace(val, num_vertices).second ) return AdjList::add_vertex();
-    //std::cerr << "Error [Graph - Add vertex] Vertex '" << val << "' already exists" << std::endl;
+    if( vertex_map_.emplace(val, num_vertices_).second ) {
+        AdjList::add_vertex();
+        return 0;
+    }
     return -1;
 }
 
 template <typename T>
-int Graph<T>::add_edge(const T &src, const T &dst, int weight) {
-    size_t src_ix = get_vertex_ix(src);
-    size_t dst_ix = get_vertex_ix(dst);
-    /*
-    if (src_ix >= num_vertices || dst_ix >= num_vertices) {
-        std::cerr << "Error [Graph] - One or both of the edge's ends doesn't exist." << std::endl;
-        return -1;
-    }
-    */
-    return Adjlist::add_edge(src_ix, dst_ix, weight);
+int Graph<T>::add_edge(const T &src_label, const T &dst_label, int weight) {
+    size_t src_ix = get_vertex_ix(src_label);
+    size_t dst_ix = get_vertex_ix(dst_label);
+    //if (src_ix >= num_vertices_ || dst_ix >= num_vertices_ || is_valid_edge(src_ix, dst_ix)) return -1;
+    AdjList::add_edge(src_ix, dst_ix, weight);
+    return 0;
 }
 
 template <typename T>
-bool Graph<T>::vertex_exists(const T &val) const {
-    return get_vertex_ix < num_vertices;
+bool Graph<T>::vertex_exists(const T &label) const {
+    return get_vertex_ix(label) < num_vertices_;
 }
 
 template <typename T>
-bool Graph<T>::edge_exists (const T &src, const T &dst) const{
-    return edge_exists(get_vertex_ix(src), get_vertex_ix(src));
+bool Graph<T>::edge_exists (const T &src_label, const T &dst_label) const{
+    return AdjList::is_valid_edge(get_vertex_ix(src_label), get_vertex_ix(src_label));
 }
 
 #endif
